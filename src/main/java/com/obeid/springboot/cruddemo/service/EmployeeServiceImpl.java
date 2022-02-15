@@ -1,61 +1,62 @@
 package com.obeid.springboot.cruddemo.service;
 
 import java.util.List;
-
-import javax.transaction.Transactional;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.obeid.springboot.cruddemo.dao.EmployeeDAO;
+import com.obeid.springboot.cruddemo.dao.EmployeeRepository;
 import com.obeid.springboot.cruddemo.entity.Employee;
 
-	/**
-	 * Standard JPA API:
-	 * By having a standard API, you're not locked
-	 * into a vendor's implementation
-	 * So this allows you to maintain portable, flexible code.
-	 * JPA also supports a query language: JPQL or the JPA Query language.
-	 */
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 	/**
-	 * since we have 2  from EmployeeDAO
-	 * we should add Qualifier
+	 * since JpaRepository provides transaction functionality
+	 * we should remove annotation: Transactional
 	 */
 	@Autowired
-	@Qualifier("employeeDAOJpa")
-	private EmployeeDAO employeeDAO;
+	private EmployeeRepository employeeRepository;
 	
 	@Override
-	@Transactional
 	public List<Employee> findall() {
 		
-		return employeeDAO.findall();
+		return employeeRepository.findAll();
 	}
 
 	@Override
-	@Transactional
 	public Employee findById(int id) {
+		/**
+		 * For findbyid, using this Optional approach
+		 * this is introduced with the JpaRepository, part of Java 8
+		 * more info at: luv2code.com/java-optional-tutorial
+		 */
+		Optional<Employee> result = employeeRepository.findById(id);
 		
-		return employeeDAO.findById(id);
+		Employee employee = null;
+		
+		//if the found employee not null
+		if(result.isPresent())
+			employee = result.get();
+		
+		else 
+			throw new RuntimeException("Employee ist not foun for id="+id);
+		
+		return employee;
 	}
 
 	@Override
-	@Transactional
 	public void save(Employee employee) {
 		
-		employeeDAO.save(employee);
+		employeeRepository.save(employee);
 
 	}
 
 	@Override
-	@Transactional
 	public void deleteById(int id) {
 		
-		employeeDAO.deleteById(id);
+		employeeRepository.deleteById(id);
 
 	}
 
