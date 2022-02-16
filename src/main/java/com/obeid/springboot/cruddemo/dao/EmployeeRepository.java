@@ -1,6 +1,7 @@
 package com.obeid.springboot.cruddemo.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import com.obeid.springboot.cruddemo.entity.Employee;
 
@@ -26,6 +27,9 @@ import com.obeid.springboot.cruddemo.entity.Employee;
 	 * 
 	 */
 
+
+//to manually specify a plural name (endpoint-> localhost:8080/members) 
+@RepositoryRestResource(path = "members")
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 	
 	// that's NO NEED to write any code :)
